@@ -1,1 +1,15 @@
+{
+  "manifest_version": 2,
 
+  "name": "MOAT",
+  "description": "This extension will allow for quick authentication of online accounts",
+  "version": "1.0",
+
+  "browser_action": {
+   "default_icon": "shield.png",
+   "default_popup": "popup.html"
+  },
+  "permissions": [
+   "activeTab"
+   ]
+}
