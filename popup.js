@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
           //window.mode = "hidden";
           message.innerHTML = "Access granted";
           label.innerHTML = " ";
-          input.value = "";
+          pin.value = "";
           //hide extension
           d.hide;
         }
@@ -52,19 +52,21 @@ document.addEventListener('DOMContentLoaded', function() {
           message.innerHTML = "Enter new PIN";
           label.innerHTML = " ";
           window.mode = "update";
-          input.value = "";
+          pin.value = "";
+          verifyButton.innerHTML = "Update PIN";
         }
         else {
           label.innerHTML = "Incorrect PIN";
-          input.value = "";
+          pin.value = "";
         }
       } 
       else if (window.mode == "update") {
         window.userPinHash = pinNum;
-        d.getElementById('add').visible = true;
         message.innerHTML = "Enter your 4-digit PIN";
         label.innerHTML = "PIN updated"
-        input.value = "";
+        pin.value = "";
+        verifyButton.innerHTML = "Verify";
+        d.getElementById('change').innerHTML = "Change PIN";
       }
     //});
   }, false);
@@ -83,11 +85,22 @@ document.addEventListener('DOMContentLoaded', function() {
   changeButton.addEventListener('click', function() {
     //prompt user to change their PIN
     var message = document.getElementById("message");
-    message.innerHTML = "Enter old PIN";
-    document.getElementById("add").visible = false;
-    window.mode = "verify";
-    var input = document.getElementById("pin");
-    input.value = "";
+    var label = document.getElementById("label");
+    if(window.mode == "user") {
+      message.innerHTML = "Enter old PIN";
+      label.innerHTML = " ";
+      document.getElementById("change").innerHTML = "Cancel";
+      window.mode = "verify";
+      document.getElementById("pin").value = "";
+    }
+    else if (window.mode == "verify" || window.mode == "update") {
+      /* Cancel the update PIN */
+      window.mode = "user";
+      message.innerHTML = "Enter your 4-digit PIN";
+      label.innerHTML = " ";
+      document.getElementById("change").innerHTML = "Change PIN";
+      document.getElementById("pin").value = "";
+    }
   }, false);
 
 }, false);
