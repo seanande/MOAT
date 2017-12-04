@@ -1,15 +1,23 @@
 <!doctype html>
-<html>
+<html onload="window.resizeTo(800,600)">
+  <style type="text/css">
+  body {
+    min-width:  200px;
+    min-height: 150px;
+    position: relative;
+    vertical-align:middle;
+  }
+  </style>
   <head>
     <title>MOAT</title>
     <script src="popup.js"></script>
     <h1 id="header">MOAT Security</h1>
     <h3 id="message">Enter your 4-digit PIN</h3>
   </head>
-  <body onload="window.resizeTo(800,600)">
-    <label id="label"></label>
-    <input type="text" id="pin" maxlength="4" size="4"><br>
-    <button id="verify">Verify</button>
+  <body>
+    <label id="label"></label><br>
+    <input type="text" id="pin" maxlength="4" size="4">
+    <button id="verify">Verify</button><br><br>
     <button id="add">Add Page</button>
     <button id="change">Change Pin</button>
   </body>
