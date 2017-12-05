@@ -2,21 +2,24 @@ var userPinHash = 1234; //eventually hash this number to make it secure
 var SiteList = [];
 var mode = "user"; //hidden, user, verify(change), update(change)
 var currURL;
-document.addEventListener('DOMContentLoaded', function() {
 
-  /*makes URL object with data of the active tab*/
-  chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
-    var url = tabs[0].url;
-    window.currURL = new URL(url);
-  });
+/*makes URL object with data of the active tab*/
+chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
+  var url = tabs[0].url;
+  window.currURL = new URL(url);
 
-
-  if (SiteList.indexOf(window.currHost) != -1) {
+  if (SiteList.indexOf(window.currURL.hostname) != -1) {
     //block/wait/redirect/etc until verify is pressed
-    window.location.href = "file:///C:/Users/seana/Documents/placeholder.pdf"
+    var newURL = "file:///C:/Users/seana/Documents/placeholder.pdf"
+    chrome.tabs.update(tabs[0].id, {url: newURL});
+
     window.mode = "user";
     //make extension visible
+    window.open;
   }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
 
   var verifyButton = document.getElementById('verify');
   verifyButton.addEventListener('click', function() {

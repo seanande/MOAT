@@ -12,5 +12,12 @@
   "permissions": [
    "activeTab",
    "tabs"
-   ]
+   ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [ {
+    "matches": ["http://*/*", "https://*/*"],
+    "js": ["popup.js"]
+  }]
 }
