@@ -1,14 +1,18 @@
 var userPinHash = 1234; //eventually hash this number to make it secure
-var SiteList = [];
+var SiteList = ["www.google.com"];
 var mode = "user"; //hidden, user, verify(change), update(change)
 var currURL;
+var oldURL;
 
+//alert("running in background");
 /*makes URL object with data of the active tab*/
 chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
-  var url = tabs[0].url;
-  window.currURL = new URL(url);
-
-  if (SiteList.indexOf(window.currURL.hostname) != -1) {
+  
+  //alert("in query");
+  window.oldURL = tabs[0].url;
+  window.currURL = new URL(window.oldURL);
+  var manifest = chrome.runtime.getManifest();
+  if (manifest.SiteList.indexOf(window.currURL.hostname) != -1) {
     //block/wait/redirect/etc until verify is pressed
     var newURL = "file:///C:/Users/seana/Documents/placeholder.pdf"
     chrome.tabs.update(tabs[0].id, {url: newURL});
@@ -23,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var verifyButton = document.getElementById('verify');
   verifyButton.addEventListener('click', function() {
-    //chrome.tabs.getSelected(null, function(tab) {
+    chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
       d = document;
       
       var pin = d.getElementById("pin");
@@ -34,18 +38,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if(window.mode == "user") {
         if (pinNum == window.userPinHash) {
-          //redirect current tab to site
-          //window.location.href = url;
-          //window.mode = "hidden";
           message.innerHTML = "Access granted";
           label.innerHTML = " ";
           pin.value = "";
+          //redirect current tab to site
+          chrome.tabs.update(tabs[0].id, {url: window.oldURL});
           //hide extension
-          d.hide;
+          window.close();
         }
         else {
           label.innerHTML = "incorrect PIN";
-          input.value = "";
+          pin.value = "";
+          message.innerHTML = "Enter your 4-digit PIN";
         }
       }
       else if (window.mode == "verify") {
@@ -69,19 +73,22 @@ document.addEventListener('DOMContentLoaded', function() {
         label.innerHTML = "PIN updated"
         pin.value = "";
         verifyButton.innerHTML = "Verify";
+        window.mode = "user";
         d.getElementById('change').innerHTML = "Change PIN";
       }
-    //});
+    });
   }, false);
   
   var addButton = document.getElementById('add');
   addButton.addEventListener('click', function() {
     //add the current page to the list
-    var url  = window.currURL;
-    var host = (new URL(url)).hostname;
-    SiteList.push(host);
+    var host = window.currURL.hostname;
+    window.SiteList.push(host);
+    chrome.runtime.getManifest().SiteList.push(host);
+    console.log(chrome.runtime.getManifest().SiteList);
     message = document.getElementById('message');
-    message.innerHTML = "Added " + host + " to your protected sites."
+    message.innerHTML = "Added " + host + " to your protected sites.";
+    console.log(window.SiteList);
   }, false);
 
   var changeButton = document.getElementById('change');

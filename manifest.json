@@ -4,6 +4,7 @@
   "name": "MOAT",
   "description": "This extension will allow for quick authentication of online accounts",
   "version": "1.0",
+  "SiteList": [],
 
   "browser_action": {
    "default_icon": "shield.png",
@@ -11,13 +12,15 @@
   },
   "permissions": [
    "activeTab",
-   "tabs"
+   "tabs",
+   "background"
    ],
-  "background": {
-    "scripts": ["background.js"]
-  },
+  //"background": {
+  //  "scripts": ["background.js"]
+  //},
   "content_scripts": [ {
-    "matches": ["http://*/*", "https://*/*"],
-    "js": ["popup.js"]
+    "matches": ["https://*/*", "https://www.google.com/*"],
+    "js": ["popup.js"],
+    "run_at": "document_start"
   }]
 }
