@@ -28,6 +28,7 @@ var oldURL;
 
 document.addEventListener('DOMContentLoaded', function() {
   console.log("loaded");
+
   chrome.storage.sync.get("PIN", function(userPIN) {
     //get userPIN from storage
   });
@@ -115,16 +116,18 @@ var addButton = document.getElementById('add');
     //add the current page to the list
     var host = window.currURL.hostname;
     
-    chrome.storage.sync.get("SiteList", function (list) {
+    chrome.storage.sync.get('SiteList', function (list) {
       //update SiteList from local storage
-      console.log("defined SiteList as...");
+      console.log("got SiteList as...");
       console.log(list);
-      window.SiteList = list;
+      window.SiteList = list.SiteList;
     });
 
-    console.log(typeof(window.SiteList));
+    //console.log(typeof(window.SiteList));
     window.SiteList.push(host);
 
+    console.log("successfully pushed.");
+    console.log(window.SiteList);
     //store new list in chrome storage
     chrome.storage.sync.set({'SiteList': window.SiteList}, function() {
       message = document.getElementById('message');
