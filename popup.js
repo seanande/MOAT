@@ -4,7 +4,6 @@ var mode = "user"; //hidden, user, verify(change), update(change)
 var currURL;
 var oldURL;
 
-//alert("running in background");
 /*makes URL object with data of the active tab*/
 chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
   
@@ -19,11 +18,34 @@ chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
 
     window.mode = "user";
     //make extension visible
-    window.open;
   }
 });
 
 document.addEventListener('DOMContentLoaded', function() {
+  
+  chrome.storage.sync.get("PIN", function(userPIN) {
+    //get userPIN from storage
+  });
+
+  /*makes URL object with data of the active tab*/
+  chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
+    
+    //alert("in query");
+    window.oldURL = tabs[0].url;
+    window.currURL = new URL(window.oldURL);
+    chrome.storage.sync.get("SiteList", function (SiteList) {
+        console.log(SiteList)
+    });
+
+    if (SiteList.indexOf(window.currURL.hostname) != -1) {
+      //block/wait/redirect/etc until verify is pressed
+      var newURL = "file:///C:/Users/seana/Documents/placeholder.pdf"
+      chrome.tabs.update(tabs[0].id, {url: newURL});
+
+      window.mode = "user";
+      //make extension visible
+    }
+  });
 
   var verifyButton = document.getElementById('verify');
   verifyButton.addEventListener('click', function() {
@@ -79,17 +101,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, false);
   
-  var addButton = document.getElementById('add');
+var addButton = document.getElementById('add');
   addButton.addEventListener('click', function() {
     //add the current page to the list
     var host = window.currURL.hostname;
-    window.SiteList.push(host);
-    chrome.runtime.getManifest().SiteList.push(host);
-    console.log(chrome.runtime.getManifest().SiteList);
-    message = document.getElementById('message');
-    message.innerHTML = "Added " + host + " to your protected sites.";
-    console.log(window.SiteList);
+    
+    chrome.storage.sync.get("SiteList", function (SiteList) {
+      //update SiteList from local storage
+      console.log(SiteList);
+    });
+
+    SiteList.push(host);
+    //store new list in chrome storage
+    chrome.storage.sync.set({'SiteList': SiteList}, function() {
+      message = document.getElementById('message');
+      message.innerHTML = "Added " + host + " to your protected sites.";
+      console.log(SiteList);
+    });
   }, false);
+
 
   var changeButton = document.getElementById('change');
   changeButton.addEventListener('click', function() {
