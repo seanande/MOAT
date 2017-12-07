@@ -1,4 +1,4 @@
-var userPinHash = 1234; //eventually hash this number to make it secure
+var userPin = 1234; //eventually hash this number to make it secure
 var SiteList = ["www.google.com"];
 var mode = "user"; //hidden, user, verify(change), update(change)
 var currURL;
@@ -8,14 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   /*makes URL object with data of the active tab*/
   chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
-    
-    //alert("in query");
+
     window.oldURL = tabs[0].url;
     window.currURL = new URL(window.oldURL);
     chrome.storage.sync.get("SiteList", function (list) {
         window.SiteList = list.SiteList;
         if (window.SiteList.indexOf(window.currURL.hostname) != -1) {
-          //block/wait/redirect/etc until verify is pressed
+          //redirect until verify is pressed
           var newURL = "file:///C:/Users/seana/Documents/Moat.pdf"
           chrome.tabs.update(tabs[0].id, {url: newURL});
 
@@ -28,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
   verifyButton.addEventListener('click', function() {
     chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
       d = document;
-      
+
+      //Get data from page
       var pin = d.getElementById("pin");
       var pinNum = pin.value;
       var header = d.getElementById("header");
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var label   = d.getElementById("label");
 
       if(window.mode == "user") {
-        if (pinNum == window.userPinHash) {
+        if (pinNum == window.userPin) {
           message.innerHTML = "Access granted";
           label.innerHTML = " ";
           pin.value = "";
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       } 
       else if (window.mode == "update") {
-        window.userPinHash = pinNum;
+        window.userPin = pinNum;
         message.innerHTML = "Enter your 4-digit PIN";
         label.innerHTML = "PIN updated"
         pin.value = "";
@@ -104,7 +104,7 @@ var addButton = document.getElementById('add');
     var label = document.getElementById("label");
     if(window.mode == "user") {
       message.innerHTML = "Enter old PIN";
-      label.innerHTML = " ";
+      label.innerHTML = "";
       document.getElementById("change").innerHTML = "Cancel";
       window.mode = "verify";
       document.getElementById("pin").value = "";
@@ -113,7 +113,7 @@ var addButton = document.getElementById('add');
       /* Cancel the update PIN */
       window.mode = "user";
       message.innerHTML = "Enter your 4-digit PIN";
-      label.innerHTML = " ";
+      label.innerHTML = "";
       document.getElementById("change").innerHTML = "Change PIN";
       document.getElementById("pin").value = "";
     }
