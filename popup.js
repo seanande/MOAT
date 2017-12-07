@@ -4,34 +4,7 @@ var mode = "user"; //hidden, user, verify(change), update(change)
 var currURL;
 var oldURL;
 
-/*makes URL object with data of the active tab*/
-/*chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
-  
-  //alert("in query");
-  window.oldURL = tabs[0].url;
-  window.currURL = new URL(window.oldURL);
-
-  chrome.storage.sync.get("SiteList", function (list) {
-    console.log(list);
-    window.SiteList = list;
-  });
-
-  if (window.SiteList.indexOf(window.currURL.hostname) != -1) {
-    //block/wait/redirect/etc until verify is pressed
-    var newURL = "file:///C:/Users/seana/Documents/placeholder.pdf"
-    chrome.tabs.update(tabs[0].id, {url: newURL});
-
-    window.mode = "user";
-    //make extension visible
-  }
-});*/
-
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("loaded");
-
-  chrome.storage.sync.get("PIN", function(userPIN) {
-    //get userPIN from storage
-  });
 
   /*makes URL object with data of the active tab*/
   chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
@@ -40,21 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
     window.oldURL = tabs[0].url;
     window.currURL = new URL(window.oldURL);
     chrome.storage.sync.get("SiteList", function (list) {
-        console.log(list);
-        window.SiteList = list;
+        window.SiteList = list.SiteList;
+        if (window.SiteList.indexOf(window.currURL.hostname) != -1) {
+          //block/wait/redirect/etc until verify is pressed
+          var newURL = "file:///C:/Users/seana/Documents/Moat.pdf"
+          chrome.tabs.update(tabs[0].id, {url: newURL});
+
+          window.mode = "user";
+        }
     });
-
-    console.log(window.currURL.hostname);
-    console.log(window.SiteList);
-    console.log(window.SiteList.indexOf(window.currURL.hostname));
-    if (window.SiteList.indexOf(window.currURL.hostname) != -1) {
-      //block/wait/redirect/etc until verify is pressed
-      var newURL = "file:///C:/Users/seana/Documents/placeholder.pdf"
-      chrome.tabs.update(tabs[0].id, {url: newURL});
-
-      window.mode = "user";
-      //make extension visible
-    }
   });
 
   var verifyButton = document.getElementById('verify');
@@ -118,21 +85,14 @@ var addButton = document.getElementById('add');
     
     chrome.storage.sync.get('SiteList', function (list) {
       //update SiteList from local storage
-      console.log("got SiteList as...");
-      console.log(list);
       window.SiteList = list.SiteList;
     });
 
-    //console.log(typeof(window.SiteList));
     window.SiteList.push(host);
-
-    console.log("successfully pushed.");
-    console.log(window.SiteList);
     //store new list in chrome storage
     chrome.storage.sync.set({'SiteList': window.SiteList}, function() {
       message = document.getElementById('message');
       message.innerHTML = "Added " + host + " to your protected sites.";
-      console.log(window.SiteList);
     });
   }, false);
 
