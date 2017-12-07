@@ -3,12 +3,14 @@
 
   "name": "MOAT",
   "description": "This extension will allow for quick authentication of online accounts",
+  "author": "Sean Anderson",
   "version": "1.0",
 
   "browser_action": {
    "default_icon": "shield.png",
    "default_popup": "popup.html"
   },
+
   "permissions": [
    "activeTab",
    "tabs",
@@ -18,9 +20,4 @@
   "background": {
     "scripts": ["popup.js"]
   }
-  //"content_scripts": [ {
-  //  "matches": ["https://*/*", "https://www.google.com/*"],
-  //  "js": ["content.js"],
-  //  "run_at": "document_start"
-  //}]
 }
