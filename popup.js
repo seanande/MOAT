@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       else if (window.mode == "verify") {
         /* Verify old PIN so they can update PIN */
-        if (pinNum == window.userPinHash) {
+        if (pinNum == window.userPin) {
           //let user enter new PIN
           message.innerHTML = "Enter new PIN";
-          label.innerHTML = " ";
+          label.innerHTML = "";
           window.mode = "update";
           pin.value = "";
           verifyButton.innerHTML = "Update PIN";
@@ -93,6 +93,8 @@ var addButton = document.getElementById('add');
     chrome.storage.sync.set({'SiteList': window.SiteList}, function() {
       message = document.getElementById('message');
       message.innerHTML = "Added " + host + " to your protected sites.";
+      label = document.getElementById('label');
+      label.innerHTML = "";
     });
   }, false);
 
